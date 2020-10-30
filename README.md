@@ -1,4 +1,4 @@
-# shiro_test
+# shiro_springboot_test
 shiro+jwt+spring-boot的简易使用
 
 本项目基于:https://github.com/Smith-Cruise/Spring-Boot-Shiro 与 https://blog.csdn.net/wws_p/article/details/107126321 编写,感谢两位的教程
