@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.shiro_test.dao.SysUserDao">
+    <resultMap id="BaseResultMap" type="com.project.shiro_test.entiy.SysUser">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="userId" jdbcType="VARCHAR" property="userid"/>
+        <result column="userName" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="userRemarks" jdbcType="VARCHAR" property="userremarks"/>
+    </resultMap>
+    <resultMap id="UserRole" type="com.project.shiro_test.entiy.User">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="userId" jdbcType="VARCHAR" property="userid"/>
+        <result column="userName" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="userRemarks" jdbcType="VARCHAR" property="userremarks"/>
+        <result column="roleName" jdbcType="VARCHAR" property="userRole"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, userId, userName, `password`, userRemarks
+  </sql>
+    <sql id="Join_Select">
+        u.id,
+        u.userName,
+        u.userId,
+        u.password,
+        u.userRemarks,
+        r.roleName
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="getUserByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where userId = #{userId,jdbcType=INTEGER}
+    </select>
+
+    <select id="getUserRole" resultMap="UserRole">
+        select
+        <include refid="Join_Select"/>
+        from sys_user u left join user_role ur on u.userId = ur.userId left join sys_role r on ur.roleId = r.roleId
+        where u.userId = #{userId}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.project.shiro_test.entiy.SysUser"
+            useGeneratedKeys="true">
+    insert into sys_user (userId, userName, `password`, 
+      userRemarks)
+    values (#{userid,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{userremarks,jdbcType=VARCHAR});
+    insert into user_role (userId,roleId) values (#{userid},'200')
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.project.shiro_test.entiy.SysUser"
+            useGeneratedKeys="true">
+        insert into sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                userId,
+            </if>
+            <if test="username != null">
+                userName,
+            </if>
+            <if test="password != null">
+                `password`,
+            </if>
+            <if test="userremarks != null">
+                userRemarks,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                #{userid,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="userremarks != null">
+                #{userremarks,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.project.shiro_test.entiy.SysUser">
+        update sys_user
+        <set>
+            <if test="userid != null">
+                userId = #{userid,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                userName = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                `password` = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="userremarks != null">
+                userRemarks = #{userremarks,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.project.shiro_test.entiy.SysUser">
+    update sys_user
+    set userId = #{userid,jdbcType=VARCHAR},
+      userName = #{username,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR},
+      userRemarks = #{userremarks,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
