@@ -39,10 +39,11 @@ public class JWTRealm extends AuthorizingRealm {
         String token = principalCollection.toString();
         String userId = JWTUtil.getUserId(token);
         User user = sysUserService.getUserRole(userId);
-        log.info("获得用户信息:{}", user);
+        log.info("获得用户信息:{}---用户权限:{}", user, user.getUserPermissions().size());
         //添加权限
         simpleAuthorizationInfo.addRole(user.getUserRole());
-        log.info("获得用户权限" + simpleAuthorizationInfo.getRoles());
+        simpleAuthorizationInfo.addStringPermissions(user.getUserPermissions());
+        log.info("获得用户角色:{}---获得用户权限:{}", simpleAuthorizationInfo.getRoles(), simpleAuthorizationInfo.getStringPermissions());
         return simpleAuthorizationInfo;
     }
 

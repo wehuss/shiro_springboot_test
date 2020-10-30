@@ -9,23 +9,27 @@
         <result column="userRemarks" jdbcType="VARCHAR" property="userremarks"/>
     </resultMap>
     <resultMap id="UserRole" type="com.project.shiro_test.entiy.User">
-        <id column="id" jdbcType="INTEGER" property="id"/>
+        <!--        <id column="id" jdbcType="INTEGER" property="id"/>-->
         <result column="userId" jdbcType="VARCHAR" property="userid"/>
         <result column="userName" jdbcType="VARCHAR" property="username"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="userRemarks" jdbcType="VARCHAR" property="userremarks"/>
         <result column="roleName" jdbcType="VARCHAR" property="userRole"/>
+        <collection javaType="java.util.List" ofType="string" property="userPermissions">
+            <result column="permissionsName"/>
+        </collection>
     </resultMap>
     <sql id="Base_Column_List">
     id, userId, userName, `password`, userRemarks
   </sql>
     <sql id="Join_Select">
-        u.id,
+--         u.id,
         u.userName,
         u.userId,
         u.password,
         u.userRemarks,
-        r.roleName
+        r.roleName,
+        sp.permissionsName
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -43,7 +47,12 @@
     <select id="getUserRole" resultMap="UserRole">
         select
         <include refid="Join_Select"/>
-        from sys_user u left join user_role ur on u.userId = ur.userId left join sys_role r on ur.roleId = r.roleId
+        from
+        sys_user u
+        left join user_role ur on u.userId = ur.userId
+        left join sys_role r on ur.roleId = r.roleId
+        left join role_per p on r.roleId = p.roleId
+        left join sys_permissions sp on p.perId = sp.perId
         where u.userId = #{userId}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
